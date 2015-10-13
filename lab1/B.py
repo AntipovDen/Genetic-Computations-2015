@@ -54,38 +54,14 @@ def dim10_test_f(x):
 n = int(input())
 pop_size, iterations = 100 * n, 10000 * n * n
 
-#the taboo heuristic doesn't help
-
-# tabooed = []
-#
-# def dist(x, y):
-#     return sqrt(sum([(x[i] - y[i]) ** 2 for i in range(len(x))]))
-#
-# def is_tabooed(x):
-#     global tabooed
-#     for y in tabooed:
-#         if dist(x, y) < 1.:
-#             return True
-#     return False
-#
-#
-# def gen_individual():
-#     individual = [random() * 20. - 10. for i in range(n)]
-#     while is_tabooed(individual):
-#         individual = [random() * 20. - 10. for i in range(n)]
-#     return individual
-
-# ind_coords = [[i / pop_size * 20. - 10. for i in range(pop_size)] for j in range(n)]
 
 alpha = 0.5
 crossover = 0.8
-
+mutation = 0.1 # y not?
 
 
 def run(f):
-    # global ind_coords
-    # for i in ind_coords:
-    #     shuffle(i)
+
     pop = [[random() * 20. - 10. for i in range(n)] for j in range(pop_size)]
     new_pop = [[0] * n for i in range(pop_size)]
     values = [f(x) for x in pop]
@@ -100,7 +76,9 @@ def run(f):
             if c >= max(a, b): c += 1
             # gen new candidate
             for j in range(n):
-                if random() < crossover:
+                if random() < mutation:
+                    new_pop[i][j] = random() * 20. - 10.
+                elif random() < crossover:
                     new_pop[i][j] = pop[a][j] + alpha * (pop[b][j] - pop[c][j])
                     if new_pop[i][j] > 10.: new_pop[i][j] = 10.
                     if new_pop[i][j] < -10.: new_pop[i][j] = -10.
@@ -109,8 +87,7 @@ def run(f):
             # we've got new candidate
             new_value = f(new_pop[i])
             if this_is_the_end:
-                print(best.popleft())
-                print("FAIL")
+                print(best.pop())
                 exit(0)
             if new_value < values[i]:
                 new_values[i] = new_value
@@ -127,7 +104,6 @@ def run(f):
 
 while(True):
     t = time()
-    alpha += 0.1
     res = run(dim10_test_f)
-#    tabooed.append(to_taboo.copy())
+    alpha += 0.1
     print("run result:", res, "time:", time() - t, sep='\t')
