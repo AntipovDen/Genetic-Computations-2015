@@ -47,6 +47,7 @@ def dim10_test_f(x):
     res = min([beta[i] + gamma[i] * sum([(x[j] - alpha_rand[j][i]) ** 2  for j in range(10)]) for i in range(5)])
     if res < 2.01:
         print('Bingo')
+        print('Iterations: {}'.format(10000 * n * n - iterations))
         exit(0)
     return res + random() - 0.5
 
@@ -108,4 +109,4 @@ def run(f):
 #     alpha += 0.1
 #     print("run result:", res, "time:", time() - t, sep='\t')
 
-run(real_f)
+run(dim10_test_f)
